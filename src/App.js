@@ -1,45 +1,77 @@
+import { useState } from "react";
+import { Button, Input, message } from "antd";
+import axios from "axios";
+
 function App() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const handleSubmit = async () => {
+    const credentials = { email, password };
+    console.log(credentials);
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/login",
+        credentials
+      );
+      messageApi.open({
+        type: "success",
+        content: response.data.message,
+        duration: 5,
+      });
+      setUserLoggedIn(true);
+    } catch (error) {
+      const message = error.response.data.message;
+      if (message.includes('Password')) {
+        setPassword('');
+      } else {
+        setEmail('')
+      }
+      messageApi.open({
+        type: "error",
+        content: error.response.data.message,
+        duration: 5,
+      });
+    }
+  };
+
   return (
     <div className="App">
-      {/* <div className="header">
-        <svg className="logo" viewBox="0 0 1809.2267 1170.0453">
-          <defs id="defs6">
-            <clipPath id="clipPath18" clipPathUnits="userSpaceOnUse">
-              <path id="path16" d="M 0,877.534 H 1356.918 V 0 H 0 Z" />
-            </clipPath>
-          </defs>
-          <g transform="matrix(1.3333333,0,0,-1.3333333,0,1170.0453)" id="g10">
-            <g id="g12">
-              <g clipPath="url(#clipPath18)" id="g14">
-                <g transform="translate(729.0995,50.4917)" id="g20">
-                  <path
-                    id="path22"
-                    d="m 0,0 c 67.593,50.152 116.573,198.016 116.573,372.628 0,6.89 -0.077,13.738 -0.228,20.541 196.036,29.405 336.578,109.127 336.578,202.862 0,4.268 -0.301,8.505 -0.875,12.711 49.901,-59.955 78.49,-129.646 78.49,-204.007 C 530.538,192.29 297.262,17.937 0,0 m -631.819,404.735 c 0,74.361 28.59,144.052 78.491,204.007 -0.575,-4.206 -0.876,-8.443 -0.876,-12.711 0,-93.735 140.542,-173.457 336.578,-202.862 -0.15,-6.803 -0.228,-13.651 -0.228,-20.541 0,-174.612 48.98,-322.476 116.573,-372.628 -297.262,17.937 -530.538,192.29 -530.538,404.735 M -50.64,763.509 c -72.848,0 -134.814,-108.895 -157.738,-260.848 -137.959,21.544 -234.288,70.482 -234.288,127.406 0,76.839 175.516,139.128 392.026,139.128 216.509,0 392.025,-62.289 392.025,-139.128 0,-56.924 -96.329,-105.862 -234.288,-127.406 C 84.173,654.614 22.207,763.509 -50.64,763.509 m -97.179,-268.261 c 15.173,97.611 52.96,166.763 97.179,166.763 44.218,0 82.005,-69.152 97.179,-166.763 -31.076,-2.813 -63.635,-4.309 -97.179,-4.309 -33.545,0 -66.103,1.496 -97.179,4.309 M -50.64,137.861 c -55.696,0 -101.192,109.706 -104.14,247.812 33.603,-3.016 68.436,-4.606 104.14,-4.606 35.704,0 70.536,1.59 104.139,4.606 C 50.551,247.567 5.055,137.861 -50.64,137.861 m 0,689.181 c -374.703,0 -678.46,-196.443 -678.46,-438.767 0,-242.324 303.757,-438.767 678.46,-438.767 374.702,0 678.459,196.443 678.459,438.767 0,242.324 -303.757,438.767 -678.459,438.767"
-                  />
-                </g>
-              </g>
-            </g>
-          </g>
-        </svg>
-        <h1 className="headerTitle">Conference name</h1>
-      </div> */}
+      {contextHolder}
       <div className="main">
-        {/* <div className="playerWrapper"> */}
-        <iframe
-          // width="560"
-          // height="315"
-          src="https://www.youtube-nocookie.com/embed/36YnV9STBqc?si=VweogKpiAUjVW1ci&autoplay=1&modestbranding=1&rel=0"
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
-          allowFullScreen
-          blockcopylink="true"
-        ></iframe>
-        {/* </div> */}
+        {userLoggedIn ? (
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/36YnV9STBqc?si=VweogKpiAUjVW1ci&autoplay=1&modestbranding=1&rel=0&showinfo=0"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          <div className="form">
+            <Input
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input.Password
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              type="primary"
+              onClick={handleSubmit}
+              disabled={email === "" || password === ""}
+              styles={{ color: "#fff" }}
+            >
+              Join Conference
+            </Button>
+          </div>
+        )}
       </div>
-      {/* <div className="footer">
-        <h1>Any contacts, copyright</h1>
-      </div> */}
     </div>
   );
 }
