@@ -80,7 +80,21 @@ iframe {
   width: 40%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
+}
+
+@media screen and (max-width: 780px) {
+  .form {
+    width: 80%;
+  }
+  iframe {
+    width: 80%;
+  }
+  .main {
+    background-image: url("./assets/bg_mobile.png");
+    background-position-x: center;
+  }
 }
 
 :where(.css-dev-only-do-not-override-3mqfnx).ant-btn-default:disabled,
@@ -91,6 +105,6 @@ iframe {
 :where(.css-dev-only-do-not-override-3mqfnx).ant-btn-primary.ant-btn-disabled {
   color: rgba(255, 255, 255, 0.5);
 }
-.ant-message-custom-content { 
+.ant-message-custom-content {
   display: flex;
 }
