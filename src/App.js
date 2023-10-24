@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Input, message } from "antd";
 import axios from "axios";
 
@@ -8,6 +8,25 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const iframeRef = useRef();
+
+  useEffect(() => {
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      const player = new window.YT.Player(iframeRef.current, {
+        events: {
+          onReady: (event) => {
+            event.target.setVolume(100);
+          },
+        },
+      });
+      console.log(player);
+    };
+  }, []);
 
   const handleSubmit = async () => {
     const credentials = { email, password };
@@ -44,9 +63,10 @@ function App() {
     <div className="App">
       {contextHolder}
       <div className="main">
-        {userLoggedIn ? (
+        {!userLoggedIn ? (
           <iframe
-            src="https://www.youtube-nocookie.com/embed/4dktzg9iFQ4?si=KBIaxo2YmL7nZqas&autoplay=1&modestbranding=1&rel=0&showinfo=0"
+            ref={iframeRef}
+            src="https://www.youtube-nocookie.com/embed/V-Ba7AFKpCA?si=aN51EUPRaA2sYmfi&autoplay=1&modestbranding=1&rel=0&showinfo=0&autohide=1&enablejsapi=1&controls=0"
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
