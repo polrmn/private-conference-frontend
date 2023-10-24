@@ -11,6 +11,12 @@ function App() {
   const iframeRef = useRef();
 
   useEffect(() => {
+    const credentials = JSON.parse(localStorage.getItem("credential"));
+    setEmail(credentials.email);
+    setPassword(credentials.password);
+  }, []);
+
+  const createScript = () => {
     const tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     const firstScriptTag = document.getElementsByTagName("script")[0];
@@ -26,7 +32,7 @@ function App() {
       });
       console.log(player);
     };
-  }, []);
+  };
 
   const handleSubmit = async () => {
     const credentials = { email, password };
@@ -43,6 +49,8 @@ function App() {
         duration: 5,
       });
       setUserLoggedIn(true);
+      createScript();
+      localStorage.setItem("credential", JSON.stringify(credentials));
     } catch (error) {
       const message = error.response.data.message;
       setIsLoading(false);
@@ -63,7 +71,7 @@ function App() {
     <div className="App">
       {contextHolder}
       <div className="main">
-        {!userLoggedIn ? (
+        {userLoggedIn ? (
           <iframe
             ref={iframeRef}
             src="https://www.youtube-nocookie.com/embed/V-Ba7AFKpCA?si=aN51EUPRaA2sYmfi&autoplay=1&modestbranding=1&rel=0&showinfo=0&autohide=1&enablejsapi=1&controls=0"

@@ -78,7 +78,7 @@ iframe {
 }
 
 .form {
-  width: 40%;
+  width: min(480px, 30%);
   display: flex;
   flex-direction: column;
   align-items: center;
