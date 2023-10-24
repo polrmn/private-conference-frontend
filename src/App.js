@@ -12,8 +12,10 @@ function App() {
 
   useEffect(() => {
     const credentials = JSON.parse(localStorage.getItem("credential"));
-    setEmail(credentials.email);
-    setPassword(credentials.password);
+    if (credentials) {
+      setEmail(credentials.email);
+      setPassword(credentials.password);
+    }
   }, []);
 
   const createScript = () => {
